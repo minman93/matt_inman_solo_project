@@ -8,9 +8,24 @@ exports.fetchTopics = () => {
         return topics.rows
     })
 }
-// exports.fetchArticles = () => {
-//     const queryString = 
-//     return db.query(queryString)
-//     .then((articles) => {
-//         return 
-//     })
+exports.fetchArticles = () => {
+    const queryString = `SELECT 
+    A.author, 
+    A.title,
+    A.article_id,
+    A.topic,
+    A.created_at,
+    A.votes,
+    A.article_img_url,
+    COUNT (B.article_id) AS comment_count
+    FROM articles A
+    LEFT JOIN comments B
+    ON A.article_id = B.article_id
+    GROUP BY A.article_id
+    ORDER BY created_at DESC
+    ;`
+    return db.query(queryString)
+    .then((articles) => {
+        return articles.rows
+    })
+}

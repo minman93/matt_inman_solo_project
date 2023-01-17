@@ -9,11 +9,11 @@ exports.getTopics = (request, response, next) => {
         response.status(200).send({topics: topicsArray})
 })
 }
-// exports.getArticles = (request, response, next) => {
-//     fetchArticles().then ((articlesArray) => {
-//         response.status(200).send({articles: articlesArray})
-//     })
-//}
+exports.getArticles = (request, response, next) => {
+    fetchArticles().then ((articlesArray) => {
+        response.status(200).send({articles: articlesArray})
+    })
+}
 
 
 
