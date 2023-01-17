@@ -45,7 +45,7 @@ describe('app', () => {
             })
         })
     })
-    describe.only('returns all articles with a GET articles request', () => {
+    describe('returns all articles with a GET articles request', () => {
         test('returns an array of article objects, each containing the following properties: AUTHOR, TITLE, ARTICLE_ID, TOPIC, CREATED_AT, VOTES, ARTICLE_IMG_URL', () => {
             return request(app)
             .get('/api/articles')
@@ -65,7 +65,7 @@ describe('app', () => {
             test('each article contains a COMMENT_COUNT, which is the total number of comments with the corresponding ARTICLE_ID', () => {
                 return request(app)
                 .get('/api/articles')
-                .then(({body}) => {
+                .then(({body}) => { 
                     expect(body.articles[0]).toHaveProperty('comment_count')
                 })
 
@@ -79,7 +79,39 @@ describe('app', () => {
                 })
             })
            
+        })
+        describe('returns an article that corresponds to the article id that is passed in', () => {
+            test('returns an article object with the following properties: AUTHOR, TITLE, ARTICLE_ID, BODY, TOPIC, CREATED_AT, VOTES, ARTICLE_IMG_URL', ()=>{
+                return request(app)
+                .get('/api/articles/3')
+                .then(({body}) => {
+                    expect(body).toHaveProperty('author')
+                    expect(body).toHaveProperty('title')
+                    expect(body).toHaveProperty('article_id')
+                    expect(body).toHaveProperty('topic')
+                    expect(body).toHaveProperty('created_at')
+                    expect(body).toHaveProperty('votes')
+                    expect(body).toHaveProperty('article_img_url')
+                })
             })
-        
+            test('returns the correct article depending on the endpoint that the user inputs', () => {
+                return request(app)
+                .get('/api/articles/5')
+                .then(({body}) => {
+                    expect(body.article_id).toEqual(5)
+                })
+            })
+            test('gives a 400 error when a valid but non-existant path is passed in', () => {
+                    return request(app)
+                    .get('/api/articles/13')
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('Bad Request')
+                    })
 
-     })
+            })
+
+
+        })
+        
+    })
