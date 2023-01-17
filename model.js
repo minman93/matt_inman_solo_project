@@ -1,5 +1,6 @@
 const db = require('./db/connection')
 const format = require('pg-format')
+const testData = require ('./db/data/test-data/index')
 
 exports.fetchTopics = () => {
     const queryString = `SELECT * FROM topics;`
@@ -27,5 +28,26 @@ exports.fetchArticles = () => {
     return db.query(queryString)
     .then((articles) => {
         return articles.rows
+    })
+}
+exports.fetchArticleById = (inputId) => {
+    const queryString = `SELECT 
+    A.author, 
+    A.title, 
+    A.article_id,
+    A.body, 
+    A.topic, 
+    A.created_at,
+    A.votes,
+    A.article_img_url 
+    FROM articles A
+    WHERE article_id = $1`
+
+    if (inputId > testData.articleData.length) {
+        return Promise.reject({status: 400, msg: 'Bad Request'})}
+
+    return db.query(queryString, [inputId])
+    .then((article) => {
+        return article.rows[0]
     })
 }
