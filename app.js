@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express()
-const { getWelcomeMessage, getTopics, getArticles, getArticleById, postComment } = require('./controller')
+
+const { getWelcomeMessage, getTopics, getArticles, getArticleById, postComment, getComments } = require('./controller')
 
 app.use(express.json())
+
 
 
 app.get('/api', getWelcomeMessage)
@@ -14,9 +16,12 @@ app.get('/api/articles', getArticles)
 
 app.get('/api/articles/:article_id', getArticleById)
 
-
+app.get('/api/articles/:article_id/comments', getComments)
 
 app.post('/api/articles/:article_id/comments', postComment)
+
+
+
 
 app.use((req, res, next) => {
      res.status(404).send({msg: 'Path not found' });

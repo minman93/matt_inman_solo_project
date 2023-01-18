@@ -85,13 +85,14 @@ describe('app', () => {
                 return request(app)
                 .get('/api/articles/3')
                 .then(({body}) => {
-                    expect(body).toHaveProperty('author')
-                    expect(body).toHaveProperty('title')
-                    expect(body).toHaveProperty('article_id')
-                    expect(body).toHaveProperty('topic')
-                    expect(body).toHaveProperty('created_at')
-                    expect(body).toHaveProperty('votes')
-                    expect(body).toHaveProperty('article_img_url')
+                    expect(body.author).toEqual('icellusedkars')
+                    expect(body.title).toEqual('Eight pug gifs that remind me of mitch')
+                    expect(body.article_id).toEqual(3)
+                    expect(body.body).toEqual('some gifs')
+                    expect(body.topic).toEqual('mitch')
+                    expect(body.created_at).toEqual('2020-11-03T09:12:00.000Z')
+                    expect(body.votes).toEqual(0)
+                    expect(body.article_img_url).toEqual('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
                 })
             })
             test('returns the correct article depending on the endpoint that the user inputs', () => {
@@ -110,8 +111,47 @@ describe('app', () => {
                     })
 
             })
+         })
+         describe('returns with the comments of the article that is passed in', () => {
+            test('returns an array of comments for the given ARTICLE_ID, with each comment containing the following properties: COMMENT_ID, VOTES, CREATED_AT, AUTHOR, BODY, ARTICLE_ID', () => {
+                return request(app)
+                .get('/api/articles/1/comments')
+                .then(({body}) => {
+                    expect(body[0]).toHaveProperty('comment_id')
+                    expect(body[1]).toHaveProperty('votes')
+                    expect(body[2]).toHaveProperty('created_at')
+                    expect(body[3]).toHaveProperty('author')
+                    expect(body[4]).toHaveProperty('body')
+                    expect(body[5]).toHaveProperty('article_id')
+                })
 
-
+            })
+            test('each comment has the correct ARTICLE_ID', () => {
+                return request(app)
+                .get('/api/articles/9/comments')
+                .then(({body}) => {
+                    expect(body[0].article_id).toEqual(9)
+                    expect(body[1].article_id).toEqual(9)})
+                })
+                test('returns with the most recent comments first', () => {
+                    return request(app)
+                    .get('/api/articles/1/comments')
+                    .then(({body}) => {
+        
+                        expect([body[0].created_at, body[1].created_at, body[2].created_at, body[3].created_at ]).toBeSorted({descending:true})
+                    })
+                })
+                test('gives a 400 error when a valid but non-existant path is passed in', () => {
+                    return request(app)
+                    .get('/api/articles/13/comments')
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('Bad Request')
+                    })
+                
+                })
+             })
+    
         })
         describe('posts comments relating to an article (depending on the ARTICLE_ID that is passed in', () => {
             test('should respond with a 201 status', () => {
@@ -123,7 +163,7 @@ describe('app', () => {
                 .post('/api/articles/3/comments').send(comment)
                 .expect(201)
             })
-            test.only('adds a comment with the correct username and body and returns an object with the correct information', ()=> {
+            test('adds a comment with the correct username and body and returns an object with the correct information', ()=> {
                 const comment = {
                     'author' :'rogersop',
                     'body':'This article SUCKS!'
@@ -141,5 +181,3 @@ describe('app', () => {
             })
             test('', () => {})
         })
-        
-    })
