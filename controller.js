@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticles, fetchArticleById } = require('./model')
+const { fetchTopics, fetchArticles, fetchArticleById, addComment } = require('./model')
 
 exports.getWelcomeMessage = (request, response, next) => {
     response.status(200).send({message: "Welcome!"})
@@ -20,6 +20,21 @@ exports.getArticleById = (request, response, next) => {
     fetchArticleById(inputId).then ((article) => {
         response.status(200).send(article)
     }).catch(next)
+}
+
+
+
+
+
+exports.postComment = (request, response, next) => {
+    const articleNumber = request.params.article_id
+    const username = request.body.author
+    const commentBody = request.body.body
+    addComment(articleNumber, username, commentBody).then((commentData) => {
+        console.log(commentData)
+        response.status(201).send(commentData)
+    })
+
 }
 
 

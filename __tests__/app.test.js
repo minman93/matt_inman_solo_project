@@ -113,5 +113,33 @@ describe('app', () => {
 
 
         })
+        describe('posts comments relating to an article (depending on the ARTICLE_ID that is passed in', () => {
+            test('should respond with a 201 status', () => {
+                const comment = {
+                    'author' :'rogersop',
+                    'body':'This is the single best article ever written in human history!'
+                 }
+                return request(app)
+                .post('/api/articles/3/comments').send(comment)
+                .expect(201)
+            })
+            test.only('adds a comment with the correct username and body and returns an object with the correct information', ()=> {
+                const comment = {
+                    'author' :'rogersop',
+                    'body':'This article SUCKS!'
+            }
+                return request(app)
+                .post('/api/articles/4/comments').send(comment)
+                .then((response) => {
+                    const addedComment = response.body
+                    console.log(addedComment)
+                    expect(addedComment.comment_id).toEqual(19)
+                    expect(addedComment.author).toEqual('rogersop')
+                    expect(addedComment.body).toEqual('This article SUCKS!')
+                })
+
+            })
+            test('', () => {})
+        })
         
     })
