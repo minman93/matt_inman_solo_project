@@ -70,13 +70,4 @@ exports.fetchComments = (inputId) => {
     })
 }
 
-exports.addComment = (articleId, username, body) => {
-    const queryString = `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`
-    return db.query(queryString, [articleId, username, body])
-        .then((commentData) => {
-            return commentData.rows[0]
-        })
-}
-
-
 
