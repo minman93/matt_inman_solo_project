@@ -51,3 +51,20 @@ exports.fetchArticleById = (inputId) => {
         return article.rows[0]
     })
 }
+exports.fetchComments = (inputId) => {
+    const queryString = `SELECT
+    A.comment_id,
+    A.votes,
+    A.created_at,
+    A.author,
+    A.body,
+    A.article_id
+    FROM comments A
+    WHERE article_id=$1 ORDER BY created_at DESC`
+    if (inputId > testData.articleData.length) {
+        return Promise.reject({status: 400, msg: 'Bad Request'})}
+    return db.query(queryString, [inputId])
+    .then((comments) => {
+        return comments.rows
+    })
+}
