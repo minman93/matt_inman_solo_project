@@ -31,10 +31,6 @@ exports.getComments = (request, response, next) => {
     
 }
 
-
-
-
-
 exports.postComment = (request, response, next) => {
     const articleNumber = request.params.article_id
     const username = request.body.author
