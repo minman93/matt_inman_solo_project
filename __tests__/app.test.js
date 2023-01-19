@@ -8,6 +8,8 @@ const sorted = require('jest-sorted');
 
 beforeEach(()=> seed(testData));
 
+afterAll(() => db.end())
+
 describe('app', () => {
     describe('get welcome message', () => {
         test('returns a status code of 200', () => {
@@ -172,12 +174,44 @@ describe('app', () => {
                 .post('/api/articles/4/comments').send(comment)
                 .then((response) => {
                     const addedComment = response.body
-                    console.log(addedComment)
                     expect(addedComment.comment_id).toEqual(19)
                     expect(addedComment.author).toEqual('rogersop')
                     expect(addedComment.body).toEqual('This article SUCKS!')
                 })
 
             })
-            test('', () => {})
+            test('if an attempt is made to post comments to an article that does not exist, respond with an error', () => {
+                const comment = {'author': 'rogersop', 'body': 'This article SUCKS!'};
+
+                return request(app)
+                .post('/api/articles/54/comments').send(comment)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toEqual('Bad Request')
+
+                })
+            })
+            test('returns an error when an object with invalid keys is passed in', () => {
+                const comment = {'writer': 'rogersop', 'comment': 'This article SUCKS!'};
+
+                return request(app)
+                .post('/api/articles/54/comments').send(comment)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toEqual('Bad Request')
+                
+            })
+
+            })
+            test('returns an error when an object with invalid values is passed in', () => {
+                const comment = {'author': 'invalidUser', 'comment': ['invalid comment']};
+
+                return request(app)
+                .post('/api/articles/54/comments').send(comment)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toEqual('Bad Request')
+                
+            })
         })
+    })

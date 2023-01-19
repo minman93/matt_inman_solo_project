@@ -73,6 +73,9 @@ exports.addComment = (articleId, username, body) => {
   return db
     .query(queryString, [articleId, username, body])
     .then((commentData) => {
+      if (commentData.rows.length === 0) {
+        return Promise.reject({ status: 400, msg: "Bad Request"})
+      }
       return commentData.rows[0];
     });
 };
