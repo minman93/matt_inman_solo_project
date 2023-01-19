@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticles, fetchArticleById, addComment, fetchComments } = require('./model')
+const { fetchTopics, fetchArticles, fetchArticleById, fetchComments } = require('./model')
 
 
 exports.getWelcomeMessage = (request, response, next) => {
@@ -29,6 +29,7 @@ exports.getComments = (request, response, next) => {
     }).catch(next)
 }
 
+
 exports.postComment = (request, response, next) => {
     const articleNumber = request.params.article_id
     const username = request.body.author
@@ -38,7 +39,5 @@ exports.postComment = (request, response, next) => {
     }).catch(next)
 
 }
-
-
 
 

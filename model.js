@@ -79,3 +79,4 @@ exports.addComment = (articleId, username, body) => {
       return commentData.rows[0];
     });
 };
+
