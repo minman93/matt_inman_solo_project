@@ -27,10 +27,17 @@ exports.getComments = (request, response, next) => {
     fetchComments(inputId).then((commentsArray) => {
         response.status(200).send(commentsArray)
     }).catch(next)
-    
-    
 }
 
 
+exports.postComment = (request, response, next) => {
+    const articleNumber = request.params.article_id
+    const username = request.body.author
+    const commentBody = request.body.body
+    Promise.all([addComment(articleNumber, username, commentBody), fetchArticleById(articleNumber) ]).then(([commentData]) => {
+        response.status(201).send(commentData)
+    }).catch(next)
+
+}
 
 
