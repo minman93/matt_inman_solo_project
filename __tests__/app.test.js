@@ -104,12 +104,12 @@ describe('app', () => {
                     expect(body.article_id).toEqual(5)
                 })
             })
-            test('gives a 400 error when a valid but non-existant path is passed in', () => {
+            test('gives a 404 error when a valid but non-existant path is passed in', () => {
                     return request(app)
                     .get('/api/articles/13')
-                    .expect(400)
+                    .expect(404)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('Bad Request')
+                        expect(body.msg).toBe('Path not found')
                     })
 
             })
@@ -143,12 +143,12 @@ describe('app', () => {
                         expect([body[0].created_at, body[1].created_at, body[2].created_at, body[3].created_at ]).toBeSorted({descending:true})
                     })
                 })
-                test('gives a 400 error when a valid but non-existant path is passed in', () => {
+                test('gives a 404 error when a valid but non-existent path is passed in', () => {
                     return request(app)
                     .get('/api/articles/13/comments')
-                    .expect(400)
+                    .expect(404)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('Bad Request')
+                        expect(body.msg).toBe('Path not found')
                     })
                 
                 })
@@ -174,7 +174,8 @@ describe('app', () => {
                 return request(app)
                 .post('/api/articles/4/comments').send(comment)
                 .then((response) => {
-                    const addedComment = response.body
+                   
+                    const addedComment = response.body.commentData
                     expect(addedComment.comment_id).toEqual(19)
                     expect(addedComment.author).toEqual('rogersop')
                     expect(addedComment.body).toEqual('This article SUCKS!')
@@ -186,9 +187,9 @@ describe('app', () => {
 
                 return request(app)
                 .post('/api/articles/54/comments').send(comment)
-                .expect(400)
+                .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toEqual('Bad Request')
+                    expect(body.msg).toEqual('Not found')
 
                 })
             })
@@ -196,7 +197,7 @@ describe('app', () => {
                 const comment = {'writer': 'rogersop', 'comment': 'This article SUCKS!'};
 
                 return request(app)
-                .post('/api/articles/54/comments').send(comment)
+                .post('/api/articles/5/comments').send(comment)
                 .expect(400)
                 .then(({body}) => {
                     expect(body.msg).toEqual('Bad Request')
@@ -208,7 +209,7 @@ describe('app', () => {
                 const comment = {'author': 'invalidUser', 'comment': ['invalid comment']};
 
                 return request(app)
-                .post('/api/articles/54/comments').send(comment)
+                .post('/api/articles/5/comments').send(comment)
                 .expect(400)
                 .then(({body}) => {
                     expect(body.msg).toEqual('Bad Request')

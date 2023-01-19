@@ -41,11 +41,11 @@ exports.fetchArticleById = (inputId) => {
     FROM articles A
     WHERE article_id = $1`;
 
-  if (inputId > testData.articleData.length) {
-    return Promise.reject({ status: 400, msg: "Bad Request" });
-  }
 
   return db.query(queryString, [inputId]).then((article) => {
+    if (article.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Path not found" });
+    }
     return article.rows[0];
   });
 };
@@ -60,19 +60,28 @@ exports.fetchComments = (inputId) => {
     A.article_id
     FROM comments A
     WHERE article_id=$1 ORDER BY created_at DESC`;
-  if (inputId > testData.articleData.length) {
-    return Promise.reject({ status: 400, msg: "Bad Request" });
-  }
-  return db.query(queryString, [inputId]).then((comments) => {
-    return comments.rows;
-  });
-};
+
+return this.fetchArticleById(inputId)
+.then((article)=> {
+
+return db.query(queryString, [inputId])
+  .then((resolvedPromises) => {
+    const comments = resolvedPromises.rows
+  
+    return comments;
+  })
+})
+}
 
 exports.addComment = (articleId, username, body) => {
+  if (username === undefined || body === undefined) {
+    return Promise.reject({ status: 400, msg: "Bad Request"})
+  }
   const queryString = `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`;
   return db
     .query(queryString, [articleId, username, body])
     .then((commentData) => {
+    
       if (commentData.rows.length === 0) {
         return Promise.reject({ status: 400, msg: "Bad Request"})
       }

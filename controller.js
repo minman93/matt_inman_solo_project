@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticles, fetchArticleById, fetchComments } = require('./model')
+const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment } = require('./model')
 
 
 exports.getWelcomeMessage = (request, response, next) => {
@@ -31,13 +31,13 @@ exports.getComments = (request, response, next) => {
 
 
 exports.postComment = (request, response, next) => {
+    
     const articleNumber = request.params.article_id
     const username = request.body.author
     const commentBody = request.body.body
-    Promise.all([addComment(articleNumber, username, commentBody), fetchArticleById(articleNumber) ]).then(([commentData]) => {
-        response.status(201).send(commentData)
+    addComment(articleNumber, username, commentBody)
+    .then((commentData) => {
+        response.status(201).send({commentData})
     }).catch(next)
-
 }
-
 
