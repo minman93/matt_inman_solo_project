@@ -89,6 +89,8 @@ return db.query(queryString, [inputId])
 })
 }
 
+
+
 exports.addComment = (articleId, username, body) => {
   if (username === undefined || body === undefined) {
     return Promise.reject({ status: 400, msg: "Bad Request"})
@@ -105,3 +107,18 @@ exports.addComment = (articleId, username, body) => {
     });
 };
 
+
+
+exports.updateArticle = (inputId, voteObj) => {
+  queryString = `UPDATE articles SET votes=$1+votes WHERE article_id=$2 RETURNING *`
+  return db.query(queryString, [voteObj, inputId])
+  .then((votes) => {
+    return votes.rows[0]
+  })
+}
+exports.fetchUsers = () => {
+  const queryString = `SELECT * FROM users;`;
+  return db.query(queryString).then((users) => {
+    return users.rows
+  })
+}

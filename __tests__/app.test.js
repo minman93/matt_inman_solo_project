@@ -153,6 +153,55 @@ describe('app', () => {
                 
                 })
              })
+             describe('patches an article with an updated vote count and returns an object containing the new vote count', () => {
+            test('should respond with a 201 status', () => { const newVotes = {inc_votes: 1}
+                return request(app)
+                .patch('/api/articles/4')
+                .expect(201).send(newVotes)
+            })
+            test('should update the article with a new vote count and return the new vote count', () => {
+                const newVotes = {inc_votes: 30}
+                return request(app)
+                .patch('/api/articles/5')
+                .expect(201).send(newVotes)
+                .then(({body}) => {
+                    expect(body).toEqual({
+                        article_id: 5,
+                        title: 'UNCOVERED: catspiracy to bring down democracy',
+                        topic: 'cats',
+                        author: 'rogersop',
+                        body: 'Bastet walks amongst us, and the cats are taking arms!',
+                        created_at: "2020-08-03T13:14:00.000Z",
+                        article_img_url:
+                          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                          votes:30
+                      })
+                })
+                
+            })
+            test('vote count patch works with a negative number', () => {
+                const newVotes = {inc_votes: -5}
+                return request(app)
+                .patch('/api/articles/1')
+                .expect(201).send(newVotes)
+                .then(({body}) => {
+                    expect(body).toEqual({
+                        article_id: 1,  
+                        title: 'Living in the shadow of a great man',
+                        topic: 'mitch',
+                        author: 'butter_bridge',
+                        body: 'I find this existence challenging',
+                        created_at: "2020-07-09T20:11:00.000Z",
+                        votes: 95,
+                        article_img_url:
+      'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'})
+                
+                })
+            })
+
+
+
+             })
     
 
         })
@@ -217,6 +266,7 @@ describe('app', () => {
             })
         })
     })
+
     describe('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
         test('should filter the articles by the topic value specified in the query', ()=> {
             return request(app)
@@ -260,3 +310,18 @@ describe('app', () => {
         })
     })
  })
+
+    describe('returns all users with a GET users request', ()=> {
+        test('returns an array of user objects, each containing the following properties: USERNAME, NAME, AVATAR_URL ',() => {
+            return request(app)
+            .get('/api/users')
+            .then(({body}) => {
+                expect(body.users[0]).toHaveProperty('username')
+                expect(body.users[1]).toHaveProperty('name')
+                expect(body.users[2]).toHaveProperty('avatar_url')
+                expect(Array.isArray(body.users))
+            })
+
+        })
+    })
+
