@@ -217,7 +217,7 @@ describe('app', () => {
             })
         })
     })
-    describe.only('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
+    describe('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
         test('should filter the articles by the topic value specified in the query', ()=> {
             return request(app)
             .get('/api/articles?topic=mitch')
