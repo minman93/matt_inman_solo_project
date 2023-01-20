@@ -74,7 +74,6 @@ exports.updateArticle = (inputId, voteObj) => {
   queryString = `UPDATE articles SET votes=$1+votes WHERE article_id=$2 RETURNING *`
   return db.query(queryString, [voteObj, inputId])
   .then((votes) => {
-    console.log(votes)
     return votes.rows[0]
   })
 }

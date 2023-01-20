@@ -34,7 +34,7 @@ exports.patchArticle = (request, response, next) => {
     const inputId = request.params.article_id
     const voteObj = request.body.inc_votes
     updateArticle(inputId, voteObj).then((patchedArticle) => {
-        console.log(patchedArticle)
+        
         response.status(201).send(patchedArticle)
     }).catch(next)
 }

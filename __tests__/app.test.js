@@ -177,6 +177,25 @@ describe('app', () => {
                 })
                 
             })
+            test('vote count patch works with a negative number', () => {
+                const newVotes = {inc_votes: -5}
+                return request(app)
+                .patch('/api/articles/1')
+                .expect(201).send(newVotes)
+                .then(({body}) => {
+                    expect(body).toEqual({
+                        article_id: 1,  
+                        title: 'Living in the shadow of a great man',
+                        topic: 'mitch',
+                        author: 'butter_bridge',
+                        body: 'I find this existence challenging',
+                        created_at: "2020-07-09T20:11:00.000Z",
+                        votes: 95,
+                        article_img_url:
+      'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'})
+                
+                })
+            })
 
 
 
