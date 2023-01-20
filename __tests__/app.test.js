@@ -266,6 +266,51 @@ describe('app', () => {
             })
         })
     })
+
+    describe('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
+        test('should filter the articles by the topic value specified in the query', ()=> {
+            return request(app)
+            .get('/api/articles?topic=mitch')
+            .then(({body}) => {
+                for (let i = 0; i < body.articles.length; i++){
+                    expect(body.articles[i].topic).toEqual('mitch')
+                }
+            })
+        })
+        test('should allow a user to sort by any valid column', () => {
+            return request(app)
+            .get('/api/articles?sortBy=votes')
+            .then(({body}) => {
+                expect([body.articles[0], body.articles[1], body.articles[2], body.articles[3], body.articles[4], body.articles[5], body.articles[6], body.articles[7], body.articles[8], body.articles[9], body.articles[10], body.articles[11]]).toBeSorted({descending: true})
+             })
+        })
+        test('should allow a user to order articles by date(the default value) in ascending or descending order', () => {
+            return request(app)
+            .get('/api/articles?order=asc')
+            .then(({body}) => {
+                expect([body.articles[0], body.articles[1], body.articles[2], body.articles[3], body.articles[4], body.articles[5], body.articles[6], body.articles[7], body.articles[8], body.articles[9], body.articles[10], body.articles[11]]).toBeSorted()
+
+            })
+        })
+        test('should return an error when an invalid sortBy query is passed in', () => {
+            return request(app)
+            .get('/api/articles?sortBy=articlewords')
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toEqual('Bad Request')
+        })
+        
+    })
+    test('should return an error when an invalid order query is passed in', () => {
+        return request(app)
+        .get('/api/articles?order=uptodown')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual('Bad Request')
+        })
+    })
+ })
+
     describe('returns all users with a GET users request', ()=> {
         test('returns an array of user objects, each containing the following properties: USERNAME, NAME, AVATAR_URL ',() => {
             return request(app)
@@ -279,3 +324,4 @@ describe('app', () => {
 
         })
     })
+
