@@ -266,3 +266,16 @@ describe('app', () => {
             })
         })
     })
+    describe('returns all users with a GET users request', ()=> {
+        test('returns an array of user objects, each containing the following properties: USERNAME, NAME, AVATAR_URL ',() => {
+            return request(app)
+            .get('/api/users')
+            .then(({body}) => {
+                expect(body.users[0]).toHaveProperty('username')
+                expect(body.users[1]).toHaveProperty('name')
+                expect(body.users[2]).toHaveProperty('avatar_url')
+                expect(Array.isArray(body.users))
+            })
+
+        })
+    })

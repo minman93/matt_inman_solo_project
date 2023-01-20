@@ -91,6 +91,8 @@ exports.addComment = (articleId, username, body) => {
     });
 };
 
+
+
 exports.updateArticle = (inputId, voteObj) => {
   queryString = `UPDATE articles SET votes=$1+votes WHERE article_id=$2 RETURNING *`
   return db.query(queryString, [voteObj, inputId])
@@ -98,4 +100,9 @@ exports.updateArticle = (inputId, voteObj) => {
     return votes.rows[0]
   })
 }
-
+exports.fetchUsers = () => {
+  const queryString = `SELECT * FROM users;`;
+  return db.query(queryString).then((users) => {
+    return users.rows
+  })
+}

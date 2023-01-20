@@ -1,5 +1,7 @@
 
-const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment, updateArticle } = require('./model')
+const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment, updateArticle, fetchUsers } = require('./model')
+
+
 
 
 exports.getWelcomeMessage = (request, response, next) => {
@@ -42,8 +44,6 @@ exports.postComment = (request, response, next) => {
         response.status(201).send({commentData})
     }).catch(next)
 }
-
-
 exports.patchArticle = (request, response, next) => {
     const inputId = request.params.article_id
     const voteObj = request.body.inc_votes
@@ -51,4 +51,10 @@ exports.patchArticle = (request, response, next) => {
         
         response.status(201).send(patchedArticle)
     }).catch(next)
+}
+
+exports.getUsers = (request, response, next) => {
+    fetchUsers().then((usersArray) => {
+        response.status(200).send({users: usersArray})
+})
 }
