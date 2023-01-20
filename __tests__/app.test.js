@@ -217,7 +217,7 @@ describe('app', () => {
             })
         })
     })
-    describe.only('returns all users with a GET users request', ()=> {
+    describe('returns all users with a GET users request', ()=> {
         test('returns an array of user objects, each containing the following properties: USERNAME, NAME, AVATAR_URL ',() => {
             return request(app)
             .get('/api/users')
