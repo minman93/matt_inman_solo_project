@@ -1,6 +1,7 @@
 const db = require("./db/connection");
 const format = require("pg-format");
 const testData = require("./db/data/test-data/index");
+const { query } = require("./db/connection");
 
 exports.fetchTopics = () => {
   const queryString = `SELECT * FROM topics;`;
@@ -8,7 +9,17 @@ exports.fetchTopics = () => {
     return topics.rows;
   });
 };
-exports.fetchArticles = (topic, sortBy, order) => {
+exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc') => {
+  const acceptedSorts = ['created_at', 'votes', 'author', 'title', 'article_img_url', 'comment_count']
+  const acceptedOrder = ['asc', 'desc']
+  const queryParams = []
+  if (!acceptedOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" })
+  }
+  if(!acceptedSorts.includes(sortBy)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" })
+  }
+
   let queryString = `SELECT 
     A.author, 
     A.title,
@@ -21,24 +32,15 @@ exports.fetchArticles = (topic, sortBy, order) => {
     FROM articles A
     LEFT JOIN comments B
     ON A.article_id = B.article_id`;
-  if (topic === undefined && sortBy === undefined && order === undefined) {
-    queryString += ` GROUP BY A.article_id ORDER BY created_at DESC;`
-  }
-  if (topic!== undefined) {
-    console.log(topic)
-    queryString += ` WHERE A.topic = ${topic} GROUP BY A.article_id ORDER BY created_at DESC;`
-  }
-  if (topic === undefined && sortBy !== created_at){
-    queryString += ` GROUP BY A.article_id ORDER BY ${sortBy} DESC;`
-  }
-  if (topic === undefined && sortBy === undefined && order === 'asc') {
-    queryString += ` GROUP BY A.article_id ORDER BY created_at ASC;`
-  }
-  if (topic === undefined && sortBy === undefined && order === 'desc') {
-    queryString += ` GROUP BY A.article_id ORDER BY created_at DESC;`
-  }
+
   
-  return db.query(queryString).then((articles) => {
+  if(topic) {
+    queryString += ` WHERE topic = $1`
+    queryParams.push(topic)
+  }
+  queryString += ` GROUP BY A.article_id ORDER BY ${sortBy} ${order.toUpperCase()};`
+
+  return db.query(queryString, queryParams).then((articles) => {
     return articles.rows;
   });
 };

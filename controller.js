@@ -17,7 +17,7 @@ exports.getArticles = (request, response, next) => {
     const order = request.query.order
     fetchArticles(topic, sortBy, order).then ((articlesArray) => {
         response.status(200).send({articles: articlesArray})
-    })
+    }).catch(next)
 
 }
 exports.getArticleById = (request, response, next) => {

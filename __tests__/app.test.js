@@ -12,7 +12,7 @@ afterAll(() => db.end())
 
 describe('app', () => {
     describe('get welcome message', () => {
-        test.only('returns a status code of 200', () => {
+        test('returns a status code of 200', () => {
             return request(app)
             .get('/api')
             .expect(200)
@@ -217,12 +217,11 @@ describe('app', () => {
             })
         })
     })
-    describe('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
+    describe.only('GET articles should be able to get articles with a specified TOPIC, be able to SORT_BY any column, and be able to be in ascending or descending ORDER', () => {
         test('should filter the articles by the topic value specified in the query', ()=> {
             return request(app)
             .get('/api/articles?topic=mitch')
             .then(({body}) => {
-                console.log(body)
                 for (let i = 0; i < body.articles.length; i++){
                     expect(body.articles[i].topic).toEqual('mitch')
                 }
@@ -232,7 +231,6 @@ describe('app', () => {
             return request(app)
             .get('/api/articles?sortBy=votes')
             .then(({body}) => {
-                console.log(body)
                 expect([body.articles[0], body.articles[1], body.articles[2], body.articles[3], body.articles[4], body.articles[5], body.articles[6], body.articles[7], body.articles[8], body.articles[9], body.articles[10], body.articles[11]]).toBeSorted({descending: true})
              })
         })
@@ -244,4 +242,21 @@ describe('app', () => {
 
             })
         })
+        test('should return an error when an invalid sortBy query is passed in', () => {
+            return request(app)
+            .get('/api/articles?sortBy=articlewords')
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toEqual('Bad Request')
+        })
+        
     })
+    test('should return an error when an invalid order query is passed in', () => {
+        return request(app)
+        .get('/api/articles?order=uptodown')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual('Bad Request')
+        })
+    })
+ })
