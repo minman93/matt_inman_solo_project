@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment } = require('./model')
+const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment, fetchUsers } = require('./model')
 
 
 exports.getWelcomeMessage = (request, response, next) => {
@@ -39,5 +39,11 @@ exports.postComment = (request, response, next) => {
     .then((commentData) => {
         response.status(201).send({commentData})
     }).catch(next)
+}
+
+exports.getUsers = (request, response, next) => {
+    fetchUsers().then((usersArray) => {
+        response.status(200).send({users: usersArray})
+})
 }
 

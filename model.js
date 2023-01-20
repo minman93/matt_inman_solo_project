@@ -88,4 +88,9 @@ exports.addComment = (articleId, username, body) => {
       return commentData.rows[0];
     });
 };
-
+exports.fetchUsers = () => {
+  const queryString = `SELECT * FROM users;`;
+  return db.query(queryString).then((users) => {
+    return users.rows
+  })
+}
