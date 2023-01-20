@@ -1,4 +1,5 @@
-const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, updateArticle } = require('./model')
+
+const { fetchTopics, fetchArticles, fetchArticleById, fetchComments, addComment, updateArticle } = require('./model')
 
 
 exports.getWelcomeMessage = (request, response, next) => {
@@ -27,8 +28,21 @@ exports.getComments = (request, response, next) => {
     fetchComments(inputId).then((commentsArray) => {
         response.status(200).send(commentsArray)
     }).catch(next)
-    
+
 }
+
+
+exports.postComment = (request, response, next) => {
+    
+    const articleNumber = request.params.article_id
+    const username = request.body.author
+    const commentBody = request.body.body
+    addComment(articleNumber, username, commentBody)
+    .then((commentData) => {
+        response.status(201).send({commentData})
+    }).catch(next)
+}
+
 
 exports.patchArticle = (request, response, next) => {
     const inputId = request.params.article_id
@@ -38,7 +52,3 @@ exports.patchArticle = (request, response, next) => {
         response.status(201).send(patchedArticle)
     }).catch(next)
 }
-
-
-
-
