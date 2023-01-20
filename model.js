@@ -73,6 +73,8 @@ return db.query(queryString, [inputId])
 })
 }
 
+
+
 exports.addComment = (articleId, username, body) => {
   if (username === undefined || body === undefined) {
     return Promise.reject({ status: 400, msg: "Bad Request"})
@@ -88,4 +90,12 @@ exports.addComment = (articleId, username, body) => {
       return commentData.rows[0];
     });
 };
+
+exports.updateArticle = (inputId, voteObj) => {
+  queryString = `UPDATE articles SET votes=$1+votes WHERE article_id=$2 RETURNING *`
+  return db.query(queryString, [voteObj, inputId])
+  .then((votes) => {
+    return votes.rows[0]
+  })
+}
 

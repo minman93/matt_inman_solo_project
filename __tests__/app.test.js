@@ -153,6 +153,55 @@ describe('app', () => {
                 
                 })
              })
+             describe('patches an article with an updated vote count and returns an object containing the new vote count', () => {
+            test('should respond with a 201 status', () => { const newVotes = {inc_votes: 1}
+                return request(app)
+                .patch('/api/articles/4')
+                .expect(201).send(newVotes)
+            })
+            test('should update the article with a new vote count and return the new vote count', () => {
+                const newVotes = {inc_votes: 30}
+                return request(app)
+                .patch('/api/articles/5')
+                .expect(201).send(newVotes)
+                .then(({body}) => {
+                    expect(body).toEqual({
+                        article_id: 5,
+                        title: 'UNCOVERED: catspiracy to bring down democracy',
+                        topic: 'cats',
+                        author: 'rogersop',
+                        body: 'Bastet walks amongst us, and the cats are taking arms!',
+                        created_at: "2020-08-03T13:14:00.000Z",
+                        article_img_url:
+                          'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                          votes:30
+                      })
+                })
+                
+            })
+            test('vote count patch works with a negative number', () => {
+                const newVotes = {inc_votes: -5}
+                return request(app)
+                .patch('/api/articles/1')
+                .expect(201).send(newVotes)
+                .then(({body}) => {
+                    expect(body).toEqual({
+                        article_id: 1,  
+                        title: 'Living in the shadow of a great man',
+                        topic: 'mitch',
+                        author: 'butter_bridge',
+                        body: 'I find this existence challenging',
+                        created_at: "2020-07-09T20:11:00.000Z",
+                        votes: 95,
+                        article_img_url:
+      'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'})
+                
+                })
+            })
+
+
+
+             })
     
 
         })

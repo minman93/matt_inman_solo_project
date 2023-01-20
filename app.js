@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express()
 
+
+const { getWelcomeMessage, getTopics, getArticles, getArticleById, getComments, postComment, patchArticle } = require('./controller')
+
 const { getWelcomeMessage, getTopics, getArticles, getArticleById, getComments, postComment } = require('./controller')
+
 
 app.use(express.json())
 
@@ -22,7 +26,7 @@ app.post('/api/articles/:article_id/comments', postComment)
 
 
 
-
+app.patch('/api/articles/:article_id', patchArticle)
 
 
 app.use((req, res, next) => {
