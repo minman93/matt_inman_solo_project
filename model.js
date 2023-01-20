@@ -8,8 +8,8 @@ exports.fetchTopics = () => {
     return topics.rows;
   });
 };
-exports.fetchArticles = () => {
-  const queryString = `SELECT 
+exports.fetchArticles = (topic, sortBy, order) => {
+  let queryString = `SELECT 
     A.author, 
     A.title,
     A.article_id,
@@ -20,10 +20,24 @@ exports.fetchArticles = () => {
     COUNT (B.article_id) AS comment_count
     FROM articles A
     LEFT JOIN comments B
-    ON A.article_id = B.article_id
-    GROUP BY A.article_id
-    ORDER BY created_at DESC
-    ;`;
+    ON A.article_id = B.article_id`;
+  if (topic === undefined && sortBy === undefined && order === undefined) {
+    queryString += ` GROUP BY A.article_id ORDER BY created_at DESC;`
+  }
+  if (topic!== undefined) {
+    console.log(topic)
+    queryString += ` WHERE A.topic = ${topic} GROUP BY A.article_id ORDER BY created_at DESC;`
+  }
+  if (topic === undefined && sortBy !== created_at){
+    queryString += ` GROUP BY A.article_id ORDER BY ${sortBy} DESC;`
+  }
+  if (topic === undefined && sortBy === undefined && order === 'asc') {
+    queryString += ` GROUP BY A.article_id ORDER BY created_at ASC;`
+  }
+  if (topic === undefined && sortBy === undefined && order === 'desc') {
+    queryString += ` GROUP BY A.article_id ORDER BY created_at DESC;`
+  }
+  
   return db.query(queryString).then((articles) => {
     return articles.rows;
   });
