@@ -1,7 +1,31 @@
+# API Documentation
+This documentation is for an API that provides users with access to articles, topics and comments within my NC News website project.
 
+# Hosted Version
+The API is hosted here: https://matt-inman-backend-project.onrender.com/api/articles
 
-## Husky
+# How To Get Started
+1. Clone the repository.
+2. Install the dependencies you need by running **npm install**.
+3. Create two new .env files and call them .env.development and .env.test.
+4. In .env.development, input PGDATABASE=nc_news
+5. in .env.test, input PGDATABASE=nc_news_test
+6. Seed the database by running **npm run seed**
 
-To ensure we are not commiting broken code this project makes use of git hooks. Git hooks are scripts triggered during certain events in the git lifecycle. Husky is a popular package which allows us to set up and maintain these scripts. This project makes use a _pre-commit hook_. When we attempt to commit our work, the script defined in the `pre-commit` file will run. If any of our tests fail than the commit will be aborted.
+# Minumum Versions
+You will need to use Node.js 10.0.0 or higher, and Postgres version 12.0.0 or higher.
 
-The [Husky documentation](https://typicode.github.io/husky/#/) explains how to configure Husky for your own project as well as creating your own custom hooks.\_
+# Endpoints
+- GET /api
+- GET /api/topics
+- GET /api/articles
+- GET /api/articles/:article_id
+- GET /api/articles/:article_id/comments
+- GET /api/users
+
+- POST /api/articles/:article_id/comments
+
+- PATCH /api/articles/:article_id
+
+# Created By
+Matt Inman
