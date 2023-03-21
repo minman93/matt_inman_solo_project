@@ -27,5 +27,8 @@ You will need to use Node.js 10.0.0 or higher, and Postgres version 12.0.0 or hi
 
 - PATCH /api/articles/:article_id
 
+# Link to Front-End Repository
+https://github.com/minman93/matt-inman-frontend-project
+
 # Created By
 Matt Inman
